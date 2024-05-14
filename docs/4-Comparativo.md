@@ -54,11 +54,13 @@ O **Shazam** que sequer constava do DATASET para a categoria *playlist*, agora l
 
 Face ao comportamento apresentado, observa-se que um recuso ou outro é melhor usado por uma ou por outra plataforma. No caso do *Chart*, não podemos afirmar, mas presumir que as plataformas **Shazam** e **Apple** provavelmente possuem uma melhor funcionalidade de uso para o mencionado recurso. 
 
+Como gráfico, optamos pelas barras pelo mesmo motivo anteriormente mencionado.
+
 </div>
     </div>
 </div>
 
-Como forma de explorar a percepção de proporção entre as plataformas para os quesitos analisados, *playlists* e *charts*, dos gráficos **E1** e **E2**, apresentamos as mesmas apurações em gráficos no formato de "pizza":
+Como se vê, nos dois itens acima, utilizamos gráficos em barra, pois é o que melhor permite distinguir, visualmente, poroporções próximas e ao mesmo tempo as distorções entre tais proporções. Mas como forma de explorar a percepção de proporção entre as plataformas para os quesitos analisados, *playlists* e *charts*, dos gráficos **E1** e **E2**, apresentamos as mesmas apurações em gráficos no formato de "pizza":
 
 <div class="grid grid-cols-2">
     <div id="ex03" class="card">
@@ -130,11 +132,33 @@ import * as vegaLite from "npm:vega-lite";
 import * as vegaLiteApi from "npm:vega-lite-api";
 import { showCode } from './showCode.js'; 
 
-const vl = vegaLiteApi.register(vega, vegaLite);
-
-const spotify = await FileAttachment("./data/spotify-2023.json").json({typed: true});
+const spotify = await FileAttachment("./data/spotify-2023.csv").csv({typed: true});
 showCode(FileAttachment("./comparacao_das_plataformas.csv.py"))
 const comparacao_contagem_plataformas = await FileAttachment("./comparacao_das_plataformas.csv").csv({typed: true});
+
+const vl = vegaLiteApi.register(vega, vegaLite);
+
+vega.formatLocale(
+    {
+        "decimal": ",",
+        "thousands": ".",
+        "grouping": [3],
+        "currency": ["R$", ""], // Brazilian Real
+    }
+)
+
+vega.timeFormatLocale
+(
+    {
+        "dateTime": "%A, %d de %B de %Y %H:%M:%S", // Example: "Sábado, 14 de Maio de 2022 15:45:30"
+        "date": "%d/%m/%Y", // Example: "14/05/2022"
+        "time": "%H:%M:%S", // Example: "15:45:30"
+        "periods": ["AM", "PM"], // AM and PM can be used in Brazilian Portuguese as well.
+        "days": ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"],
+        "shortDays": ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"],
+        "months": ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"],
+        "shortMonths": ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
+})
 
 function ex01(divWidth) 
 {
@@ -248,10 +272,10 @@ function ex03(divWidth)
                     "sort": 
                     {
                         "field": ["Playlists"],
-                        "type": "quantitative",
+                        "type": "sum",
                         "order": "ascending"
                     },
-                    "title": "Total de Playlists", "type": "quantitative", "stack": true,
+                    "text": "Total de Playlists", "type": "quantitative", "stack": true,
                 },
                 "color": {"field": "Plataforma",   
                 "sort": 
